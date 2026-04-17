@@ -44,9 +44,9 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
   { 
     id: '1', 
     category: '科技馆', 
-    title: '未来科技馆', 
+    title: '北仑科技馆', 
     description: '探索前沿科技的沉浸式体验空间。', 
-    fullDescription: '未来科技馆是一个集人工智能、量子计算和生物工程于一体的综合性展示空间。该项目通过多媒体互动和VR技术，让观众亲身体验未来科技的魅力。',
+    fullDescription: '北仑科技馆是一个集人工智能、量子计算和生物工程于一体的综合性展示空间。该项目通过多媒体互动和VR技术，让观众亲身体验未来科技的魅力。',
     technologies: ['Unity', 'C#', 'Arduino', 'TouchDesigner'],
     date: '2023-10-15',
     timeRange: '2023.01 - 2023.10',
@@ -113,6 +113,19 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
     timeRange: '2022.10 - 2023.05',
     image: 'https://picsum.photos/seed/museum/800/600',
     responsibilities: '负责数字化文物馆展柜设计及全息投影短片的技术指导。'
+  },
+  { 
+    id: '2-1', 
+    category: '博物馆', 
+    title: '东阳博物馆', 
+    location: '东阳',
+    description: '展示东阳木雕艺术与历史文化的窗口。', 
+    fullDescription: '东阳博物馆以精湛的木雕工艺和深厚的历史底蕴为核心，通过现代展示手段与传统艺术的结合，呈现出一场跨越时空的文化盛宴。',
+    technologies: ['CAD', '3ds Max', 'Photoshop'],
+    date: '2024-02-15',
+    timeRange: '2023.09 - 2024.02',
+    image: 'https://picsum.photos/seed/dongyang/800/600',
+    responsibilities: '主笔设计师，负责展厅整体色彩规划与重点展项空间设计。'
   },
   { 
     id: '3', 
@@ -320,7 +333,7 @@ const ProfileSection = ({ onShowWechat }: { onShowWechat: () => void }) => {
           </div>
           <div className="flex gap-3">
             <span className="text-apple-blue font-bold text-lg leading-none mt-0.5">•</span>
-            <p>对AI学习热情度极高，精通Gemini、Google AI studio、Stable Diffusion（Web ui），用Gemini制作了诸多智能体，用Google AI studio自研了一系列可以提高工作效率的程序，可以把AI完美的融入工作流程中，提高工作效率也提升工作质量。</p>
+            <p>对AI学习热情度极高，精通Gemini、Google AI studio、Stable Diffusion（Web ui），用Gemini制作了诸多智能体，用Google AI studio自研了一系列可以提高工作效率的程序，并且搭建网站，可以把AI完美的融入工作流程中，提高工作效率也提升工作质量。</p>
           </div>
         </div>
       </div>
