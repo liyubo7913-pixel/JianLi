@@ -15,7 +15,8 @@ import {
   ArrowLeft,
   ChevronRight,
   ExternalLink,
-  Copy
+  Copy,
+  QrCode
 } from 'lucide-react';
 
 // --- Types ---
@@ -167,6 +168,41 @@ const CATEGORIES = ['全部', '科技馆', '博物馆', '企业馆', 'AI作品�
 
 // --- Components ---
 
+const ImageModal = ({ src, isOpen, onClose, title }: { src: string, isOpen: boolean, onClose: () => void, title?: string }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-8"
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="relative max-w-lg w-full flex flex-col items-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="bg-white p-4 rounded-3xl shadow-2xl w-full">
+            {title && <h3 className="text-center text-apple-text font-bold mb-4">{title}</h3>}
+            <div className="rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center aspect-square">
+              <img src={src} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="mt-8 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-md transition-all active:scale-90"
+          >
+            <X size={28} />
+          </button>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 const BackgroundAnimation = () => (
   <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-20 dark:opacity-10 transition-opacity duration-1000">
     <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-apple-blue/10 blur-[120px] rounded-full animate-blob" />
@@ -174,7 +210,7 @@ const BackgroundAnimation = () => (
   </div>
 );
 
-const ProfileSection = () => {
+const ProfileSection = ({ onShowWechat }: { onShowWechat: () => void }) => {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
@@ -206,32 +242,46 @@ const ProfileSection = () => {
             <span className="info-label">现住址</span>
             <span className="info-value">上海市杨浦区</span>
           </div>
-          <div className="info-item border-none">
-            <span className="info-label">联系方式</span>
-            <div className="flex flex-col items-end gap-1">
-              <a href="tel:18646352505" className="info-value text-apple-blue hover:underline">186 4635 2505</a>
-              <div className="relative">
-                <button 
-                  onClick={copyEmail}
-                  className="text-[13px] text-apple-secondary hover:text-apple-blue transition-colors flex items-center gap-1 group"
-                >
-                  872241999@qq.com
-                  <Copy size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-                <AnimatePresence>
-                  {copied && (
-                    <motion.span 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute -top-8 right-0 bg-black text-white text-[10px] px-2 py-1 rounded"
-                    >
-                      已复制
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </div>
+          
+          <div className="py-2.5 border-b border-gray-100">
+            <span className="info-label block mb-2">联系电话</span>
+            <a href="tel:18646352505" className="info-value text-apple-blue hover:underline text-lg">186 4635 2505</a>
+          </div>
+
+          <div className="py-2.5 border-b border-gray-100">
+            <span className="info-label block mb-2">联系邮箱</span>
+            <div className="relative inline-block">
+              <button 
+                onClick={copyEmail}
+                className="info-value hover:text-apple-blue transition-colors flex items-center gap-2 group text-lg"
+              >
+                872241999@qq.com
+                <Copy size={16} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <AnimatePresence>
+                {copied && (
+                  <motion.span 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute -top-10 left-0 bg-black text-white text-[12px] px-3 py-1.5 rounded-lg font-bold"
+                  >
+                    已复制
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
+          </div>
+
+          <div className="py-2.5 border-none">
+            <span className="info-label block mb-2">联系微信</span>
+            <button 
+              onClick={onShowWechat}
+              className="flex items-center gap-2 text-apple-blue font-bold text-[15px] hover:opacity-70 transition-opacity"
+            >
+              <QrCode size={18} />
+              点击此处查看微信二维码
+            </button>
           </div>
         </div>
       </div>
@@ -304,7 +354,7 @@ const ProfileSection = () => {
           ))}
         </div>
         <p className="text-center text-[11px] text-apple-secondary mt-6 font-medium italic">
-          更多项目请与您我联系进行了解...
+          更多项目请您与我联系进行了解...
         </p>
       </div>
 
@@ -695,10 +745,15 @@ const ProjectDetail = ({ item, onClose }: { item: PortfolioItem, onClose: () => 
 export default function App() {
   const [activeSection, setActiveSection] = useState<Section>('profile');
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
+  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const [isWechatOpen, setIsWechatOpen] = useState(false);
+
+  // Avatar URL constant to reuse
+  const AVATAR_URL = "https://picsum.photos/seed/portrait/800/800";
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'profile': return <ProfileSection />;
+      case 'profile': return <ProfileSection onShowWechat={() => setIsWechatOpen(true)} />;
       case 'experience': return <ExperienceSection />;
       case 'portfolio': return <PortfolioSection onSelectItem={setSelectedItem} />;
     }
@@ -717,15 +772,18 @@ export default function App() {
       {/* Header */}
       <header className="sticky top-0 z-40 glass px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-apple-blue shadow-sm shrink-0 bg-apple-gray">
+          <button 
+            onClick={() => setIsAvatarOpen(true)}
+            className="w-12 h-12 rounded-full overflow-hidden border-2 border-apple-blue shadow-sm shrink-0 bg-apple-gray active:scale-90 transition-transform cursor-zoom-in"
+          >
              <img 
-               src="https://picsum.photos/seed/portrait/200/200" 
+               src={AVATAR_URL} 
                alt="个人照片" 
                className="w-full h-full object-cover"
                referrerPolicy="no-referrer"
              />
-          </div>
-          <div className="flex flex-col">
+          </button>
+          <div className="flex flex-col text-left">
             <h1 className="text-xl font-bold tracking-tight">李钰博</h1>
             <p className="text-[11px] text-apple-secondary font-bold tracking-widest uppercase mt-0.5">
               资深主创设计师 · 33岁
@@ -787,6 +845,21 @@ export default function App() {
           })}
         </div>
       </nav>
+
+      {/* Modals */}
+      <ImageModal 
+        src={AVATAR_URL} 
+        isOpen={isAvatarOpen} 
+        onClose={() => setIsAvatarOpen(false)} 
+        title="个人头像"
+      />
+      
+      <ImageModal 
+        src="https://picsum.photos/seed/wechat-qr/600/600?blur=5" 
+        isOpen={isWechatOpen} 
+        onClose={() => setIsWechatOpen(false)} 
+        title="微信二维码"
+      />
 
       {/* Portfolio Detail Page Overlay */}
       <AnimatePresence>
