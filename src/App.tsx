@@ -855,7 +855,7 @@ export default function App() {
       />
       
       <ImageModal 
-        src="https://picsum.photos/seed/wechat-qr/600/600?blur=5" 
+        src="https://i.imgs.ovh/2026/04/17/Zx7mjt.jpeg" 
         isOpen={isWechatOpen} 
         onClose={() => setIsWechatOpen(false)} 
         title="微信二维码"
